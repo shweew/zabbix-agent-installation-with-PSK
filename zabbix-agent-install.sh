@@ -12,7 +12,7 @@ cd /etc/zabbix
 
 #Generate a key
 openssl rand -hex 32 > zabbix_agent.psk
-chown zabbix:zabbix -R zabbix_agent.psk
+chown zabbix:zabbix zabbix_agent.psk
 chmod 400 zabbix_agent.psk
 
 #Set up a configuration file
