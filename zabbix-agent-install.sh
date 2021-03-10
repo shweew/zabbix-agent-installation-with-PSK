@@ -33,6 +33,6 @@ echo -e "\033[7mTLSPSKIdentity=PSK-$(hostname -s)\033[0m"
 echo -e "\033[7mPSK=$(cat /etc/zabbix/zabbix_agent.psk)\033[0m"
 echo ######################################################
 else
-echo -en "\033[37;1;41mRun script with option: "./zabbix-agent-install.sh zabix-server.example.com"\033[0m"
+echo -en "\033[37;1;41mRun script with option: "./zabbix-agent-install.sh zabbix-server.example.com"\033[0m"
 echo
 fi
