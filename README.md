@@ -1,4 +1,4 @@
-# CentOS 7 zabbix-agent installation with PSK
+# CentOS 7/Ubuntu 18.04 zabbix-agent installation with PSK
 
 wget https://raw.githubusercontent.com/shweew/zabbix-agent-installation-with-PSK/main/zabbix-agent-install.sh
 
