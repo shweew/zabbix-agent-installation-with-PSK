@@ -44,7 +44,7 @@ echo "Include=/etc/zabbix/zabbix_agentd.d/*.conf" >> $CONF
 echo "TLSConnect=psk" >> $CONF
 echo "TLSAccept=psk" >> $CONF
 echo "TLSPSKIdentity=PSK-$(hostname -s)" >> $CONF
-echo "TLSPSKFile=/etc/zabbix/zabbix_agentd.psk" >> $CONF
+echo "TLSPSKFile=$KEY" >> $CONF
 echo >> $CONF
 
 # Enable zabbix-agent startup
