@@ -11,8 +11,8 @@ if [ -n "$1" ]; then
 
 # Check Ubuntu or CentOS, install package and configure firewall
 if [ -f "$FILE" ]; then
-  wget https://repo.zabbix.com/zabbix/5.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.2-1+ubuntu18.04_all.deb
-  sudo dpkg -i zabbix-release_5.2-1+ubuntu18.04_all.deb
+  wget https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+bionic_all.deb
+  dpkg -i zabbix-release_5.0-1+bionic_all.deb
   sudo apt install zabbix-agent
   sudo iptables -A INPUT -p tcp --dport 10050 -j ACCEPT
   sudo netfilter-persistent save
@@ -27,12 +27,12 @@ else
   firewall-cmd --reload
 fi
 
-# Generate a key
+# Generate key
 openssl rand -hex 32 > $KEY
 chown zabbix:zabbix $KEY
 chmod 400 $KEY
 
-# Set up a configuration file
+# Create configuration file
 cp $CONF $CONF.old
 echo "PidFile=/var/run/zabbix/zabbix_agentd.pid" > $CONF
 echo "LogFile=/var/log/zabbix/zabbix_agentd.log" >> $CONF
