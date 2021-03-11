@@ -51,12 +51,17 @@ echo >> $CONF
 sudo systemctl enable zabbix-agent
 sudo systemctl restart zabbix-agent
 
+# Show agent connection information on the server
 echo ######################################################
-echo -e "\033[7mHostname=$(hostname)\033[0m"
-echo -e "\033[7mTLSPSKIdentity=PSK-$(hostname -s)\033[0m"
-echo -e "\033[7mPSK=$(cat $KEY)\033[0m"
+echo "#"
+echo -e "# \033[7mHostname=$(hostname)\033[0m"
+echo -e "# \033[7mTLSPSKIdentity=PSK-$(hostname -s)\033[0m"
+echo -e "# \033[7mPSK=$(cat $KEY)\033[0m"
+echo "#"
 echo ######################################################
 else
+
+# Error message
 echo -en "\033[37;1;41mRun script with option: "./zabbix-agent-install.sh zabbix-server.example.com"\033[0m"
 echo
 fi
