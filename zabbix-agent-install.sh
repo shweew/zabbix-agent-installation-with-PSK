@@ -48,8 +48,8 @@ echo "TLSPSKFile=/etc/zabbix/zabbix_agentd.psk" >> $CONF
 echo >> $CONF
 
 # Enable zabbix-agent startup
-systemctl enable zabbix-agent
-systemctl restart zabbix-agent
+sudo systemctl enable zabbix-agent
+sudo systemctl restart zabbix-agent
 
 echo ######################################################
 echo -e "\033[7mHostname=$(hostname)\033[0m"
