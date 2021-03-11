@@ -5,19 +5,34 @@
 
 CONF=/etc/zabbix/zabbix_agentd.conf
 KEY=/etc/zabbix/zabbix_agentd.psk
+FILE=/etc/lsb-release
 
-if [ -n "$1" ]
-then
+if [ -n "$1" ]; then
 
-#Installing Package
-rpm -ihv https://repo.zabbix.com/zabbix/5.2/rhel/7/x86_64/zabbix-agent-5.2.5-1.el7.x86_64.rpm
+# Check Ubuntu or CentOS, install package and configure firewall
+if [ -f "$FILE" ]; then
+  wget https://repo.zabbix.com/zabbix/5.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.2-1+ubuntu18.04_all.deb
+  sudo dpkg -i zabbix-release_5.2-1+ubuntu18.04_all.deb
+  sudo apt install zabbix-agent
+  sudo iptables -A INPUT -p tcp --dport 10050 -j ACCEPT
+  sudo netfilter-persistent save
+  sudo netfilter-persistent reload
+else 
+  rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
+  yum install zabbix-agent -y
+  firewall-cmd --permanent --new-service=zabbix
+  firewall-cmd --permanent --service=zabbix --add-port=10050/tcp
+  firewall-cmd --permanent --service=zabbix --set-short="Zabbix Agent"
+  firewall-cmd --permanent --add-service=zabbix
+  firewall-cmd --reload
+fi
 
-#Generate a key
+# Generate a key
 openssl rand -hex 32 > $KEY
 chown zabbix:zabbix $KEY
 chmod 400 $KEY
 
-#Set up a configuration file
+# Set up a configuration file
 cp $CONF $CONF.old
 echo "PidFile=/var/run/zabbix/zabbix_agentd.pid" > $CONF
 echo "LogFile=/var/log/zabbix/zabbix_agentd.log" >> $CONF
@@ -32,12 +47,7 @@ echo "TLSPSKIdentity=PSK-$(hostname -s)" >> $CONF
 echo "TLSPSKFile=/etc/zabbix/zabbix_agent.psk" >> $CONF
 echo >> $CONF
 
-#Create a firewall rule and enable zabbix-agent startup
-firewall-cmd --permanent --new-service=zabbix
-firewall-cmd --permanent --service=zabbix --add-port=10050/tcp
-firewall-cmd --permanent --service=zabbix --set-short="Zabbix Agent"
-firewall-cmd --permanent --add-service=zabbix
-firewall-cmd --reload
+# Enable zabbix-agent startup
 systemctl enable zabbix-agent
 systemctl restart zabbix-agent
 
@@ -50,3 +60,4 @@ else
 echo -en "\033[37;1;41mRun script with option: "./zabbix-agent-install.sh zabbix-server.example.com"\033[0m"
 echo
 fi
+exit 0
