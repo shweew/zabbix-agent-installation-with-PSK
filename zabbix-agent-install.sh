@@ -41,7 +41,6 @@ echo "TLSConnect=psk" >> $CONF
 echo "TLSAccept=psk" >> $CONF
 echo "TLSPSKIdentity=PSK-$(hostname -s)" >> $CONF
 echo "TLSPSKFile=$KEY" >> $CONF
-echo >> $CONF
 
 # Enable zabbix-agent startup
 sudo systemctl enable zabbix-agent
