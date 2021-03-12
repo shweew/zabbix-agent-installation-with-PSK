@@ -17,7 +17,7 @@ if [ -f "$FILE" ]; then
   sudo iptables -A INPUT -p tcp --dport 10050 -j ACCEPT
   sudo netfilter-persistent save
   sudo netfilter-persistent reload
-  cp $CONF $CONF.old
+  
   echo "LogFile=/var/log/zabbix-agent/zabbix_agentd.log" > $CONF
   echo "Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf" >> $CONF
 else 
