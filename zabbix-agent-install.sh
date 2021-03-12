@@ -9,7 +9,7 @@ FILE=/etc/lsb-release
 
 if [ -n "$1" ]; then
 
-# Check Ubuntu or CentOS, install package and configure
+# Check Ubuntu or CentOS, install package and configure firewall
 if [ -f "$FILE" ]; then
   wget https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+bionic_all.deb
   dpkg -i zabbix-release_5.0-1+bionic_all.deb
@@ -17,9 +17,6 @@ if [ -f "$FILE" ]; then
   sudo iptables -A INPUT -p tcp --dport 10050 -j ACCEPT
   sudo netfilter-persistent save
   sudo netfilter-persistent reload
-  
-  echo "LogFile=/var/log/zabbix-agent/zabbix_agentd.log" > $CONF
-  echo "Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf" >> $CONF
 else 
   rpm -Uvh https://repo.zabbix.com/zabbix/5.0/rhel/7/x86_64/zabbix-release-5.0-1.el7.noarch.rpm
   yum install zabbix-agent -y
@@ -28,9 +25,6 @@ else
   firewall-cmd --permanent --service=zabbix --set-short="Zabbix Agent"
   firewall-cmd --permanent --add-service=zabbix
   firewall-cmd --reload
-  cp $CONF $CONF.old
-  echo "LogFile=/var/log/zabbix/zabbix_agentd.log" > $CONF
-  echo "Include=/etc/zabbix/zabbix_agentd.d/*.conf" >> $CONF
 fi
 
 # Generate key
@@ -38,12 +32,10 @@ openssl rand -hex 32 > $KEY
 chown zabbix:zabbix $KEY
 chmod 400 $KEY
 
-# Add general options
-echo "PidFile=/var/run/zabbix/zabbix_agentd.pid" >> $CONF
-echo "LogFileSize=0" >> $CONF
-echo "Server=$1" >> $CONF
-echo "ServerActive=$1" >> $CONF
-echo "Hostname=$(hostname)" >> $CONF
+# Edit and add options
+sed -i "s/Server=127.0.0.1/Server=$1/" $CONF
+sed -i "s/ServerActive=127.0.0.1/ServerActive=$1/" $CONF
+sed -i "s/Hostname=Zabbix server/Hostname=$(hostname)/" $CONF
 echo "TLSConnect=psk" >> $CONF
 echo "TLSAccept=psk" >> $CONF
 echo "TLSPSKIdentity=PSK-$(hostname -s)" >> $CONF
