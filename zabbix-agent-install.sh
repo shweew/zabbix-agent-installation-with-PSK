@@ -33,6 +33,7 @@ chown zabbix:zabbix $KEY
 chmod 400 $KEY
 
 # Edit and add options
+cp $CONF $CONF.old
 sed -i "s/Server=127.0.0.1/Server=$1/" $CONF
 sed -i "s/ServerActive=127.0.0.1/ServerActive=$1/" $CONF
 sed -i "s/Hostname=Zabbix server/Hostname=$(hostname)/" $CONF
